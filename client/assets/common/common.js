@@ -8,7 +8,6 @@ import {
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 
 const SafeCon = styled.SafeAreaView`
-  width: 100%;
   flex: 1;
   background-color: #161616;
 `;

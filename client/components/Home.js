@@ -29,7 +29,9 @@ import {
   createStackNavigator,
 } from "@react-navigation/stack";
 
-const Home = ({ navigation, route }) => {
+const Home = (props) => {
+  const navigation = props.navigation;
+  const routes = props.routes;
   const Stack = createStackNavigator();
   const navigationState = navigation.getState();
 
