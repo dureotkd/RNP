@@ -22,7 +22,40 @@ import Port from "./Port";
 const Stack = createStackNavigator();
 
 const Login = () => {
-  const handleLoginId = () => {};
+  const [loginId, setLoginId] = useState();
+  const [loginPw, setLoginPw] = useState();
+
+  const handleLoginId = (text) => {
+    setLoginId(text);
+  };
+  const handleLoginPw = (text) => {
+    setLoginPw(text);
+  };
+
+  const handleLoginRes = async () => {
+    const isLogined = await checkLoginData();
+
+    if (isLogined) alert("Thanks Bro Login Success!");
+    else alert("Hey Bro Noo~~~");
+  };
+
+  const checkLoginData = async () => {
+    const flag = await axios({
+      method: "get",
+      url: `${Port}/doLogin`,
+      params: {
+        loginId: loginId,
+        loginPw: loginPw,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200 && Object.keys(data).length > 0) return true;
+        else return false;
+      })
+      .catch((e) => alert(e));
+
+    return flag;
+  };
 
   return (
     <SafeCon
@@ -32,7 +65,7 @@ const Login = () => {
         justifyContent: "center",
       }}
     >
-      <ScrollView style={{ padding: 15 }}>
+      <View style={{ padding: 15 }}>
         <View
           style={{
             marginTop: 15,
@@ -66,6 +99,8 @@ const Login = () => {
             <Text style={{ color: "white", width: 300 }}>비밀번호</Text>
           </View>
           <TextInput
+            secureTextEntry={true}
+            onChangeText={handleLoginPw}
             style={{
               borderBottomColor: "white",
               marginTop: 6,
@@ -79,6 +114,7 @@ const Login = () => {
         </View>
         <View style={{ marginTop: 15, alignItems: "center" }}>
           <TouchableOpacity
+            onPress={handleLoginRes}
             style={{
               marginTop: 25,
               backgroundColor: "red",
@@ -92,7 +128,7 @@ const Login = () => {
             <Text style={{ color: "white" }}>로그인</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </SafeCon>
   );
 };
