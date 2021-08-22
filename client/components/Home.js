@@ -18,7 +18,7 @@ import {
   ShopDetailTitle,
 } from "../assets/common/common";
 
-import { photoShopDetail } from "./Home/photoShopDetail";
+import photoShopDetail from "./Home/photoShopDetail";
 import { photoShopList } from "./Home/photoShopList";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -28,10 +28,9 @@ import {
   CardStyleInterpolators,
   createStackNavigator,
 } from "@react-navigation/stack";
+import { connect } from "react-redux";
 
-const Home = (props) => {
-  const navigation = props.navigation;
-  const routes = props.routes;
+const Home = ({ navigation, routes }) => {
   const Stack = createStackNavigator();
   const navigationState = navigation.getState();
 

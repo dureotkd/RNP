@@ -1,5 +1,5 @@
 import Home from "./Home";
 import Chat from "./Chat";
-import ChatList from "./ChatList";
+import Profile from "./Profile";
 import WelCome from "./WelCome";
-export { Home, ChatList, Chat, WelCome };
+export { Home, Profile, Chat, WelCome };

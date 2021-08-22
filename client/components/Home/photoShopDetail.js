@@ -25,8 +25,9 @@ import { SwiperFlatList } from "react-native-swiper-flatlist";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "@rimiti/react-native-toastify";
 import Port from "../Port";
+import { connect } from "react-redux";
 
-export const photoShopDetail = ({ navigation, route }) => {
+const photoShopDetail = ({ loginUser, navigation, route }) => {
   const [selectImage, setSelectImage] = useState();
   const [userImage, setUserImage] = useState();
   const [like, setLike] = useState(0);
@@ -44,7 +45,26 @@ export const photoShopDetail = ({ navigation, route }) => {
     `${row.sub_img_4}`,
   ];
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getWishPoint();
+  }, []);
+
+  const getWishPoint = async () => {
+    await axios({
+      method: "get",
+      url: `${Port}/getWishPoint`,
+      params: {
+        shopSeq: row.seq,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200) setLike(data[0].cnt);
+        else alert("데이터 불러오기 실패.");
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
 
   const PickGallery = async () => {
     await CheckEnabledGallery();
@@ -71,6 +91,76 @@ export const photoShopDetail = ({ navigation, route }) => {
     }
   };
 
+  const handleWish = async () => {
+    const isCheckDupWish = await CheckDupWish();
+    if (isCheckDupWish) await saveWishPhotoShop();
+    else await deleteWishPhotoShop();
+  };
+
+  const deleteWishPhotoShop = async () => {
+    await axios({
+      method: "get",
+      url: `${Port}/DeleteWishPhotoShop`,
+      params: {
+        shopSeq: row.seq,
+        userNo: loginUser.seq,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200) {
+          setLike(like - 1);
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+
+  const saveWishPhotoShop = async () => {
+    await axios({
+      method: "get",
+      url: `${Port}/WishPhotoShop`,
+      params: {
+        shopSeq: row.seq,
+        userNo: loginUser.seq,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200) {
+          setLike(like + 1);
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+
+  const CheckDupWish = async () => {
+    const flag = await axios({
+      method: "get",
+      url: `${Port}/CheckDupWish`,
+      params: {
+        shopSeq: row.seq,
+        userNo: loginUser.seq,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200) {
+          if (Object.keys(data).length > 0) {
+            return false;
+          } else return true;
+        } else {
+          alert("네트워크 오류발생");
+          return false;
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+
+    return flag;
+  };
+
   const handleChat = (seq) => {
     navigation.navigate("Chat", { seq });
   };
@@ -79,6 +169,20 @@ export const photoShopDetail = ({ navigation, route }) => {
     setSelectImage(uri);
     setPhotoMenuVisible(false);
     setUserImage(null);
+
+    await axios({
+      method: "get",
+      url: `${Port}/ReserveSuccess`,
+      params: {
+        shopSeq: row.seq,
+        userNo: loginUser.seq,
+        type: "photo",
+      },
+    })
+      .then(({ data, status }) => {})
+      .catch((e) => {
+        alert(e);
+      });
 
     const msg = `안녕하세요 회원님~~ ${row.title} 입니다. 예약해주신 사진 잘받았습니다.작업 완료 후 바로 연락드리겠습니다 , 이용해주셔서 감사합니다`;
 
@@ -94,13 +198,13 @@ export const photoShopDetail = ({ navigation, route }) => {
       },
     })
       .then(({ data, status }) => {
-        if (status === 200) console.log(data);
+        if (status === 200) {
+          alert("예약 완료되었습니다");
+        }
       })
       .catch((e) => {
         alert(e);
       });
-
-    alert("예약 완료되었습니다");
   };
 
   const ShowDetailImg = (index) => {
@@ -269,7 +373,7 @@ export const photoShopDetail = ({ navigation, route }) => {
               style={{
                 flex: 1,
               }}
-              onPress={() => setLike(like + 1)}
+              onPress={handleWish}
             >
               <Text
                 style={{ textAlign: "center", fontSize: 15, color: "white" }}
@@ -392,3 +496,10 @@ export const photoShopDetail = ({ navigation, route }) => {
     </View>
   );
 };
+
+function ChageState(loginUser) {
+  return {
+    loginUser: loginUser,
+  };
+}
+export default connect(ChageState)(photoShopDetail);

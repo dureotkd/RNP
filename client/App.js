@@ -16,13 +16,25 @@ import { createStore } from "redux";
 import * as Location from "expo-location";
 import AppIndex from "./AppIndex";
 import { Provider } from "react-redux";
-
-const Tab = createBottomTabNavigator();
-const Store = createStore(() => {
-  return { name: "성민", age: 27 };
-});
-
+import { AsyncStorage } from "react-native";
 export default function App() {
+  const [loginUser, setLoginUser] = useState();
+  useEffect(() => {
+    getLoginUser();
+  }, []);
+
+  const getLoginUser = async () => {
+    await AsyncStorage.getItem("loginUser", (err, res) => {
+      if (res !== null) {
+        const asyncUser = JSON.parse(res);
+        if (Object.keys(asyncUser).length > 0) setLoginUser(asyncUser);
+      }
+    });
+  };
+  const Store = createStore(() => {
+    return loginUser;
+  });
+
   return (
     <Provider store={Store}>
       <AppIndex />

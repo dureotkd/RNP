@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   TextInput,
+  AsyncStorage,
 } from "react-native";
 import { SafeCon } from "../assets/common/common";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
@@ -21,7 +22,7 @@ import Port from "./Port";
 
 const Stack = createStackNavigator();
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [loginId, setLoginId] = useState();
   const [loginPw, setLoginPw] = useState();
 
@@ -33,10 +34,19 @@ const Login = () => {
   };
 
   const handleLoginRes = async () => {
-    const isLogined = await checkLoginData();
+    const loginUser = await checkLoginData();
 
-    if (isLogined) alert("Thanks Bro Login Success!");
+    if (Object.keys(loginUser).length > 0) await doLogin(loginUser);
     else alert("Hey Bro Noo~~~");
+  };
+
+  const doLogin = async (loginUser) => {
+    await AsyncStorage.setItem(
+      "loginUser",
+      JSON.stringify(loginUser[0]),
+      () => {}
+    );
+    alert("Bro Login Success~");
   };
 
   const checkLoginData = async () => {
@@ -49,7 +59,7 @@ const Login = () => {
       },
     })
       .then(({ data, status }) => {
-        if (status === 200 && Object.keys(data).length > 0) return true;
+        if (status === 200) return data;
         else return false;
       })
       .catch((e) => alert(e));
@@ -294,7 +304,7 @@ const Join = ({ navigation }) => {
   );
 };
 
-const FirstPage = ({ navigation }) => {
+const FirstPage = ({ navigation, loginUser }) => {
   const userWidth = Dimensions.get("window").width;
   const presentImg = [
     "https://search.pstatic.net/common/?autoRotate=true&quality=95&type=w750&src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20210723_159%2F1627019426922iv3cl_PNG%2FP5hBe-KoUjMp8WmzDPs1MvB2.PNG.png",
@@ -304,6 +314,8 @@ const FirstPage = ({ navigation }) => {
     "http://spnimage.edaily.co.kr/images/Photo/files/NP/S/2021/05/PS21051800093.jpg",
   ];
 
+  useLayoutEffect(() => {}, []);
+
   return (
     <SafeCon>
       <ScrollView
@@ -312,7 +324,7 @@ const FirstPage = ({ navigation }) => {
         }}
       >
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 30 }}>
-          우리동네 사진관 확인하고 인생사진 얻자!
+          우리동네 사진관 확인하고 인생사진 얻자! ({loginUser?.id})
         </Text>
         <View
           style={{
@@ -330,44 +342,47 @@ const FirstPage = ({ navigation }) => {
           <Text style={{ color: "white", fontSize: 20 }}>
             현재 동네 21개 사진관 예약가능
           </Text>
-          <View style={{ width: userWidth - 50, flexDirection: "row" }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
-              style={{
-                flex: 1,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 6,
-                borderRadius: 12,
-                height: 50,
-                marginRight: 12,
-              }}
-            >
-              <Text style={{ color: "black", fontSize: 16 }}>로그인</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Join")}
-              style={{
-                flex: 1,
-                backgroundColor: "#3f51b5",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 6,
-                borderRadius: 12,
-                height: 50,
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 16 }}>회원가입</Text>
-            </TouchableOpacity>
-          </View>
+          {loginUser === null ? (
+            <View style={{ width: userWidth - 50, flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Login")}
+                style={{
+                  flex: 1,
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 6,
+                  borderRadius: 12,
+                  height: 50,
+                  marginRight: 12,
+                }}
+              >
+                <Text style={{ color: "black", fontSize: 16 }}>로그인</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Join")}
+                style={{
+                  flex: 1,
+                  backgroundColor: "#3f51b5",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 6,
+                  borderRadius: 12,
+                  height: 50,
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 16 }}>회원가입</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
       </ScrollView>
     </SafeCon>
   );
 };
 
-const WelCome = ({ navigation, state }) => {
+const WelCome = (props) => {
+  const navigation = props.navigation;
   const navState = navigation.getState();
 
   useLayoutEffect(() => {
@@ -380,22 +395,22 @@ const WelCome = ({ navigation, state }) => {
 
   return (
     <Stack.Navigator
-      initialRouteName="Welcome"
+      initialRouteName="FirstPage"
       screenOptions={{
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
       }}
     >
-      <Stack.Screen name="Welcome" component={FirstPage} />
+      <Stack.Screen name="FirstPage" component={FirstPage.bind(this, props)} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Join" component={Join} />
     </Stack.Navigator>
   );
 };
 
-function StateChange(state) {
+function StateChange(loginUser) {
   return {
-    state: state,
+    loginUser: loginUser,
   };
 }
 

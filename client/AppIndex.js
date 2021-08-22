@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet, Text, View, StatusBar } from "react-native";
-import { Home, ChatList, Chat, WelCome } from "./components";
+import { Home, Profile, Chat, WelCome } from "./components";
 import { Con, HeaderLogo } from "./assets/common/common";
 import { photoShopDetail } from "./components/Home/photoShopDetail";
 import { photoShopList } from "./components/Home/photoShopList";
@@ -136,8 +136,8 @@ function App() {
             }}
           />
           <Tab.Screen
-            name="ChatList"
-            component={ChatList}
+            name="Profile"
+            component={Profile}
             options={{
               tabBarIcon: (props) => {
                 return <Icon name="account" size={28} color={props.color} />;
@@ -150,9 +150,9 @@ function App() {
   );
 }
 
-function ChangeState(state) {
+function ChangeState(loginUser) {
   return {
-    state: state,
+    loginUser: loginUser,
   };
 }
 
