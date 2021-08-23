@@ -107,7 +107,12 @@ const Profile = ({ loginUser, navigation }) => {
             reservationList.map((data, index) => {
               return (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Detail", { row: data })}
+                  onPress={() =>
+                    navigation.navigate("Home", {
+                      screen: "Detail",
+                      params: { row: data },
+                    })
+                  }
                   key={data.seq}
                   activeOpacity={0.8}
                   style={{
@@ -155,7 +160,14 @@ const Profile = ({ loginUser, navigation }) => {
             wishList.map((data, index) => {
               return (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Detail", { row: data })}
+                  onPress={() =>
+                    navigation.navigate("Home", {
+                      screen: "Detail",
+                      params: {
+                        row: data,
+                      },
+                    })
+                  }
                   key={data.seq}
                   activeOpacity={0.8}
                   style={{
