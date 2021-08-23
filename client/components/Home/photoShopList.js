@@ -110,7 +110,6 @@ export const photoShopList = ({ navigation }) => {
   const [photoShops, setPhotoShops] = useState();
 
   useEffect(() => {
-    console.log("zzz");
     axios({
       method: "get",
       url: `${Port}/getPhotoShop`,

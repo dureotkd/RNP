@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@paraboly/react-native-card": "^1.0.3",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-navigation/bottom-tabs": "^6.0.4",
     "@react-navigation/native": "^6.0.2",
