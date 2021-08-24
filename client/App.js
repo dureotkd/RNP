@@ -12,15 +12,22 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AppLoading from "expo-app-loading";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Provier } from "react-redux";
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import * as Location from "expo-location";
 import AppIndex from "./AppIndex";
 import { Provider } from "react-redux";
 import { AsyncStorage } from "react-native";
+import Port from "./components/Port";
+
 export default function App() {
-  const [loginUser, setLoginUser] = useState();
+  const [loginUser, setLoginUser] = useState(null);
+  const [wishList, setWishList] = useState(null);
+  const [reservationList, setReservationList] = useState(null);
+
   useEffect(() => {
     getLoginUser();
+    getWishList();
+    getReservationList();
   }, []);
 
   const getLoginUser = async () => {
@@ -31,9 +38,76 @@ export default function App() {
       }
     });
   };
-  const Store = createStore(() => {
-    return loginUser;
-  });
+
+  const getWishList = async () => {
+    await axios({
+      method: "get",
+      url: `${Port}/getWishList`,
+      params: {
+        userNo: loginUser.seq,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200) setWishList(data);
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+
+  const getReservationList = async () => {
+    await axios({
+      method: "get",
+      url: `${Port}/getReservationList`,
+      params: {
+        userNo: loginUser.seq,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === 200) setReservationList(data);
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+
+  const loginUserRd = (state = loginUser, action) => {
+    switch (action.type) {
+      case "하이": {
+        console.log("Hi2");
+        break;
+      }
+
+      default: {
+        return state;
+      }
+    }
+
+    return state;
+  };
+
+  const wishListRd = (state = wishList, action) => {
+    switch (action.type) {
+      case "하이": {
+        console.log("Hi1");
+        break;
+      }
+
+      default: {
+        return state;
+      }
+    }
+
+    return state;
+  };
+
+  const reservationListRd = (state = reservationList, action) => {
+    return state;
+  };
+
+  const Store = createStore(
+    combineReducers({ loginUserRd, wishListRd, reservationListRd })
+  );
 
   return (
     <Provider store={Store}>

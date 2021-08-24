@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -18,48 +18,15 @@ import Port from "./Port";
 import { timeForToday } from "../assets/helper/timeHelper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const Profile = ({ loginUser, navigation }) => {
+const Profile = (props) => {
   const userHeight = Dimensions.get("window").height;
   const userWidth = Dimensions.get("window").width;
-  const [wishList, setWishList] = useState();
-  const [reservationList, setReservationList] = useState();
 
-  useEffect(() => {
-    getWishList();
-    getReservationList();
-  }, []);
-
-  const getWishList = async () => {
-    await axios({
-      method: "get",
-      url: `${Port}/getWishList`,
-      params: {
-        userNo: loginUser.seq,
-      },
-    })
-      .then(({ data, status }) => {
-        if (status === 200) setWishList(data);
-      })
-      .catch((e) => {
-        alert(e);
-      });
-  };
-
-  const getReservationList = async () => {
-    await axios({
-      method: "get",
-      url: `${Port}/getReservationList`,
-      params: {
-        userNo: loginUser.seq,
-      },
-    })
-      .then(({ data, status }) => {
-        if (status === 200) setReservationList(data);
-      })
-      .catch((e) => {
-        alert(e);
-      });
-  };
+  const loginUser = props.loginUser;
+  const wishList = props.wishList;
+  const reservationList = props.reservationList;
+  const navigation = props.navigation;
+  const dispatch = props.dispatch;
 
   return (
     <ScrollView
@@ -198,9 +165,11 @@ const Profile = ({ loginUser, navigation }) => {
   );
 };
 
-function StateChange(loginUser) {
+function StateChange(props) {
   return {
-    loginUser: loginUser,
+    loginUser: props.loginUserRd,
+    wishList: props.wishListRd,
+    reservationList: props.reservationListRd,
   };
 }
 

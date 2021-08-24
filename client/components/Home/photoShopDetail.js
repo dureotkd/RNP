@@ -27,7 +27,7 @@ import Toast from "@rimiti/react-native-toastify";
 import Port from "../Port";
 import { connect } from "react-redux";
 
-const photoShopDetail = ({ loginUser, navigation, route }) => {
+const photoShopDetail = ({ loginUser, navigation, route, dispatch }) => {
   const [selectImage, setSelectImage] = useState();
   const [userImage, setUserImage] = useState();
   const [like, setLike] = useState(0);
@@ -46,6 +46,8 @@ const photoShopDetail = ({ loginUser, navigation, route }) => {
   ];
 
   useEffect(() => {
+    dispatch({ type: "하이" });
+
     getWishPoint();
   }, []);
 
@@ -497,9 +499,11 @@ const photoShopDetail = ({ loginUser, navigation, route }) => {
   );
 };
 
-function ChageState(loginUser) {
+function ChageState(props) {
   return {
-    loginUser: loginUser,
+    loginUser: props.loginUserRd,
+    wishList: props.wishListRd,
+    reservationList: props.reservationListRd,
   };
 }
 export default connect(ChageState)(photoShopDetail);

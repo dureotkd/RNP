@@ -150,9 +150,9 @@ function App() {
   );
 }
 
-function ChangeState(loginUser) {
+function ChangeState(props) {
   return {
-    loginUser: loginUser,
+    loginUser: props.loginUserRd,
   };
 }
 
