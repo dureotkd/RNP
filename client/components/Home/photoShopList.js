@@ -24,35 +24,22 @@ const SortBtnList = (props) => {
   const sortArr = [
     { name: "기본", code: "normal" },
     { name: "평점 높은 곳", code: "rate" },
-    { name: "가장 가까운 곳", code: "near" },
-    { name: "리뷰 많은 곳", code: "review" },
   ];
 
   const handleSort = (code) => {
     if (code === sortState) return;
-
     const cloneList = [...props.photoShops];
-    let standard;
     switch (code) {
       default: {
-        alert("아직 준비중인 서비스입니다.");
-        return;
+        cloneList.sort((prev, next) => {
+          return prev.reg_date < next.reg_date ? 1 : -1;
+        });
         break;
       }
       case "rate": {
         cloneList.sort((prev, next) => {
           return prev.satis_avg < next.satis_avg ? 1 : -1;
         });
-        break;
-      }
-      case "near": {
-        alert("아직 준비중인 서비스입니다.");
-        return;
-        break;
-      }
-      case "review": {
-        alert("아직 준비중인 서비스입니다.");
-        return;
         break;
       }
     }

@@ -25,21 +25,29 @@ export default function App() {
   const [reservationList, setReservationList] = useState(null);
 
   useEffect(() => {
-    getLoginUser();
-    getWishList();
-    getReservationList();
+    getProfileUserData();
   }, []);
+
+  const getProfileUserData = async () => {
+    await getLoginUser();
+    await getWishList();
+    await getReservationList();
+  };
 
   const getLoginUser = async () => {
     await AsyncStorage.getItem("loginUser", (err, res) => {
+      console.log(res);
       if (res !== null) {
         const asyncUser = JSON.parse(res);
-        if (Object.keys(asyncUser).length > 0) setLoginUser(asyncUser);
+        if (Object.keys(asyncUser).length > 0) {
+          setLoginUser(asyncUser);
+        }
       }
     });
   };
 
   const getWishList = async () => {
+    console.log(`${Port}/getWishList`);
     await axios({
       method: "get",
       url: `${Port}/getWishList`,
@@ -51,8 +59,11 @@ export default function App() {
         if (status === 200) setWishList(data);
       })
       .catch((e) => {
-        alert(e);
+        console.log("getWishList Error");
+        // alert(e);
       });
+
+    console.log("zz2");
   };
 
   const getReservationList = async () => {
@@ -67,8 +78,10 @@ export default function App() {
         if (status === 200) setReservationList(data);
       })
       .catch((e) => {
-        alert(e);
+        // alert(e);
       });
+
+    console.log("zz3");
   };
 
   const loginUserRd = (state = loginUser, action) => {
@@ -87,21 +100,36 @@ export default function App() {
   };
 
   const wishListRd = (state = wishList, action) => {
+    const cloneList = [...state];
     switch (action.type) {
-      case "하이": {
-        console.log("Hi1");
-        break;
+      case "saveWishPhotoShop": {
+        const photoShop = action.payload;
+        cloneList.push(photoShop);
+
+        return cloneList;
+      }
+
+      case "deleteWishPhotoShop": {
+        const photoShop = action.payload;
+        const filterPhotoShop = cloneList.filter(
+          (row) => photoShop.seq != row.seq
+        );
+        return filterPhotoShop;
       }
 
       default: {
         return state;
       }
     }
-
-    return state;
   };
 
   const reservationListRd = (state = reservationList, action) => {
+    switch (action.type) {
+      default: {
+        return state;
+      }
+    }
+
     return state;
   };
 

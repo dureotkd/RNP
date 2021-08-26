@@ -46,8 +46,6 @@ const photoShopDetail = ({ loginUser, navigation, route, dispatch }) => {
   ];
 
   useEffect(() => {
-    dispatch({ type: "하이" });
-
     getWishPoint();
   }, []);
 
@@ -111,6 +109,7 @@ const photoShopDetail = ({ loginUser, navigation, route, dispatch }) => {
       .then(({ data, status }) => {
         if (status === 200) {
           setLike(like - 1);
+          dispatch({ type: "deleteWishPhotoShop", payload: row });
         }
       })
       .catch((e) => {
@@ -130,6 +129,8 @@ const photoShopDetail = ({ loginUser, navigation, route, dispatch }) => {
       .then(({ data, status }) => {
         if (status === 200) {
           setLike(like + 1);
+          console.log(data);
+          dispatch({ type: "saveWishPhotoShop", payload: row });
         }
       })
       .catch((e) => {

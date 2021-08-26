@@ -18,15 +18,15 @@ import Port from "./Port";
 import { timeForToday } from "../assets/helper/timeHelper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const Profile = (props) => {
+const Profile = ({
+  loginUser,
+  wishList,
+  reservationList,
+  navigation,
+  dispatch,
+}) => {
   const userHeight = Dimensions.get("window").height;
   const userWidth = Dimensions.get("window").width;
-
-  const loginUser = props.loginUser;
-  const wishList = props.wishList;
-  const reservationList = props.reservationList;
-  const navigation = props.navigation;
-  const dispatch = props.dispatch;
 
   return (
     <ScrollView
@@ -97,7 +97,9 @@ const Profile = (props) => {
                     source={{ uri: data.present_img }}
                   />
                   <View style={{ marginLeft: 6 }}>
-                    <Text>{data.title}</Text>
+                    <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+                      {data.title}
+                    </Text>
                     <Text>{data.local}</Text>
                     <Text>{timeForToday(data.date)}</Text>
                   </View>
@@ -152,7 +154,9 @@ const Profile = (props) => {
                     source={{ uri: data.present_img }}
                   />
                   <View style={{ marginLeft: 6 }}>
-                    <Text>{data.title}</Text>
+                    <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+                      {data.title}
+                    </Text>
                     <Text>{data.local}</Text>
                     <Text>{timeForToday(data.reg_date)}</Text>
                   </View>

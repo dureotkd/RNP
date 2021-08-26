@@ -324,7 +324,7 @@ const FirstPage = ({ navigation, loginUser }) => {
         }}
       >
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 30 }}>
-          우리동네 사진관 확인하고 인생사진 얻자! ({loginUser?.id})
+          우리동네 사진관 확인하고 인생사진 얻자!
         </Text>
         <View
           style={{
